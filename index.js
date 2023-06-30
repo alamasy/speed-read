@@ -16,7 +16,17 @@ function renderText(text) {
 
 let wordIndex = 0;
 let interval;
-let initialSpeed = 240;
+let initialSpeed = 200;
+
+function changeSpeed(word) {
+  if (word === "faster.") {
+    initialSpeed = 150;
+  } else if (word === "amazing.") {
+    initialSpeed = 120;
+  }
+}
+
+changeSpeed(words[wordIndex]);
 
 const elBtn = document.getElementById("start");
 elBtn.addEventListener("click", () => {
@@ -24,17 +34,39 @@ elBtn.addEventListener("click", () => {
   elBtn.disabled = true;
   elBtn.classList.toggle("linethrough");
 
-  interval = setInterval(() => {
+  setIntervalHandler();
+
+  function setIntervalHandler() {
     if (wordIndex === words.length) {
       clearInterval(interval);
+      wordIndex = 0;
+
+      // Bring back button style to the beginning
       elBtn.disabled = false;
       elBtn.classList.toggle("linethrough");
-
-      wordIndex = 0;
       elTextDisplay.innerText = "Click again";
     } else {
+      clearInterval(interval); // mencegah pemanggilan berulang
+
       renderText(words[wordIndex]);
       wordIndex++;
+      changeSpeed(words[wordIndex]);
+
+      interval = setInterval(setIntervalHandler, initialSpeed);
     }
-  }, initialSpeed);
+  }
+
+  //   interval = setInterval(() => {
+  //     if (wordIndex === words.length) {
+  //       clearInterval(interval);
+  //       elBtn.disabled = false;
+  //       elBtn.classList.toggle("linethrough");
+
+  //       wordIndex = 0;
+  //       elTextDisplay.innerText = "Click again";
+  //     } else {
+  //       renderText(words[wordIndex]);
+  //       wordIndex++;
+  //     }
+  //   }, initialSpeed);
 });
